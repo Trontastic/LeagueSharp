@@ -369,7 +369,7 @@ namespace VayneHunterRework
                     var EnMin = Menu.Item("NEnUlt").GetValue<Slider>().Value;
                     var EnemiesList =
                         ObjectManager.Get<Obj_AI_Hero>()
-                            .Where(h => h.IsValid && !h.IsDead && h.Distance(Player) <= 900 && h.IsEnemy).ToList();
+                            .Where(h => h.IsValid && !h.IsDead && h.Distance(Player.Position) <= 900 && h.IsEnemy).ToList();
                     if (getPerValue(true) >= ManaC && isMenuEnabled("UseQC"))
                     {
                         if(isMenuEnabled("UseRC") && R.IsReady() && EnemiesList.Count >= EnMin)R.CastOnUnit(Player);
@@ -617,14 +617,15 @@ namespace VayneHunterRework
         {
             if (isGrass(EndPosition))
             {
-                var WardSlot = FindBestWardItem();
+                InventorySlot WardSlot = FindBestWardItem();
                 if (WardSlot == null) return;
                 for (int i = 0; i < Vector3.Distance(sPos, EndPosition); i += (int)target.BoundingRadius)
                 {
-                    var v = sPos.To2D().Extend(EndPosition.To2D(), i).To3D();
+                    Vector3 v = sPos.To2D().Extend(EndPosition.To2D(), i).To3D();
                     if (isGrass(v))
                     {
-                        WardSlot.UseItem(v);
+                        //WardSlot.UseItem(v);
+                        Player.Spellbook.CastSpell(WardSlot.SpellSlot, v);
                     }
                 }
             }

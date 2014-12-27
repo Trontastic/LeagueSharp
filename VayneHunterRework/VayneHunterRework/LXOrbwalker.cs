@@ -254,7 +254,7 @@ namespace VayneHunterRework
             }
             if (!CanMove() || !IsAllowedToMove())
                 return;
-            if (MyHero.IsMelee() && target != null && target.Distance(MyHero) < GetAutoAttackRange(MyHero, target) &&
+            if (MyHero.IsMelee() && target != null && target.Distance(MyHero.Position) < GetAutoAttackRange(MyHero, target) &&
                 Menu.Item("lxOrbwalker_Melee_Prediction").GetValue<bool>() && target is Obj_AI_Hero && Game.CursorPos.Distance(target.Position) < 300)
             {
                 _movementPrediction.Delay = MyHero.BasicAttack.SpellCastTime;
@@ -360,7 +360,7 @@ namespace VayneHunterRework
                     .Count(
                         obj =>
                             obj.Name == "AzirSoldier" && obj.IsAlly && obj.BoundingRadius < 66 && obj.AttackSpeedMod > 1 &&
-                            obj.Distance(unit) < 350) == 2)
+                            obj.Distance(unit.Position) < 350) == 2)
                 return MyHero.CalcDamage(unit, Damage.DamageType.Magical, dmg) +
                        (MyHero.CalcDamage(unit, Damage.DamageType.Magical, dmg) * 0.25);
             return MyHero.CalcDamage(unit, Damage.DamageType.Magical, dmg);
@@ -368,7 +368,7 @@ namespace VayneHunterRework
 
         public static bool InSoldierAttackRange(Obj_AI_Base target)
         {
-            return target != null && ObjectManager.Get<Obj_AI_Minion>().Any(obj => obj.Name == "AzirSoldier" && obj.IsAlly && obj.BoundingRadius < 66 && obj.AttackSpeedMod > 1 && obj.Distance(target) < 380);
+            return target != null && ObjectManager.Get<Obj_AI_Minion>().Any(obj => obj.Name == "AzirSoldier" && obj.IsAlly && obj.BoundingRadius < 66 && obj.AttackSpeedMod > 1 && obj.Distance(target.Position) < 380);
         }
 
         public static Obj_AI_Base GetPossibleTarget()
@@ -406,7 +406,7 @@ namespace VayneHunterRework
                         from minion in
                             ObjectManager.Get<Obj_AI_Minion>().Where(minion => minion.IsValidTarget() && InSoldierAttackRange(minion))
                         let t = (int)(MyHero.AttackCastDelay * 1000) - 100 + Game.Ping / 2 +
-                                1000 * (int)MyHero.Distance(minion) / (int)MyProjectileSpeed()
+                                1000 * (int)MyHero.Distance(minion.Position) / (int)MyProjectileSpeed()
                         let predHealth = HealthPrediction.GetHealthPrediction(minion, t, FarmDelay(-125))
                         where minion.Team != GameObjectTeam.Neutral && predHealth > 0 &&
                               predHealth <= GetAzirAASandwarriorDamage(minion)
@@ -419,7 +419,7 @@ namespace VayneHunterRework
                         from minion in
                             ObjectManager.Get<Obj_AI_Minion>().Where(minion => minion.IsValidTarget() && InAutoAttackRange(minion))
                         let t = (int)(MyHero.AttackCastDelay * 1000) - 100 + Game.Ping / 2 +
-                                1000 * (int)MyHero.Distance(minion) / (int)MyProjectileSpeed()
+                                1000 * (int)MyHero.Distance(minion.Position) / (int)MyProjectileSpeed()
                         let predHealth = HealthPrediction.GetHealthPrediction(minion, t, FarmDelay())
                         where minion.Team != GameObjectTeam.Neutral && predHealth > 0 &&
                               predHealth <= MyHero.GetAutoAttackDamage(minion, true)
@@ -613,7 +613,7 @@ namespace VayneHunterRework
                 killableEnemy = enemy;
                 hitsToKill = killHits;
             }
-            return hitsToKill <= 4 ? killableEnemy : SimpleTs.GetTarget(GetAutoAttackRange() + 100, SimpleTs.DamageType.Physical);
+            return hitsToKill <= 4 ? killableEnemy : TargetSelector.GetTarget(GetAutoAttackRange() + 100, TargetSelector.DamageType.Physical);
         }
 
         public static double CountKillhits(Obj_AI_Base enemy)
