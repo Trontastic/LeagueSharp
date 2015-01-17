@@ -25,7 +25,7 @@ namespace EmoteBlocker.Source
             Game.OnGameSendPacket += Emote.Game_OnGameSendPacket;
             Game.OnGameUpdate += Emote.Game_OnGameUpdate;
 
-	        Config.CreateMenu();
+            Config.CreateMenu();
         }
     }
 }

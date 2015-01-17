@@ -34,46 +34,46 @@ namespace EmoteBlocker.Source
 
         internal static void Game_OnGameUpdate(EventArgs args)
         {
-	        if (!Config.SpamEnabled || _nextEmoteSpam < (int) Game.Time)
-				return;
+            if (!Config.SpamEnabled || _nextEmoteSpam < (int) Game.Time)
+                return;
 
-	        if (!CanPlayEmote())
-		        return;
+            if (!CanPlayEmote())
+                return;
 
-	        PlayEmote();
-	        _nextEmoteSpam = (int)Game.Time + Config.SpamInterval;
+            PlayEmote();
+            _nextEmoteSpam = (int)Game.Time + Config.SpamInterval;
 
-	        if (Core.DebugMode)
-		        Game.PrintChat("Spam");
+            if (Core.DebugMode)
+                Game.PrintChat("Spam");
         }
 
-	    static Boolean CanPlayEmote()
-	    {
-		    Obj_AI_Hero nearestEnemy =
-			    ObjectManager.Get<Obj_AI_Hero>()
-				    .Where(h => (!h.IsDead && h.IsEnemy))
-				    .OrderBy(h => h.Distance(Core.Hero))
-				    .FirstOrDefault();
+        static Boolean CanPlayEmote()
+        {
+            Obj_AI_Hero nearestEnemy =
+                ObjectManager.Get<Obj_AI_Hero>()
+                    .Where(h => (!h.IsDead && h.IsEnemy))
+                    .OrderBy(h => h.Distance(Core.Hero))
+                    .FirstOrDefault();
 
-			// there is no enemy?
-		    if (nearestEnemy == null || nearestEnemy.Distance(Core.Hero) > 1000)
-			    return false;
+            // there is no enemy?
+            if (nearestEnemy == null || nearestEnemy.Distance(Core.Hero) > 1000)
+                return false;
 
-			// i'm dead, channeling, charging or recalling?
-		    if (Core.Hero.IsDead || Core.Hero.IsChanneling || Core.Hero.IsCharging || Core.Hero.HasBuff("Recall"))
-			    return false;
+            // i'm dead, channeling, charging or recalling?
+            if (Core.Hero.IsDead || Core.Hero.IsChanneling || Core.Hero.IsCharging || Core.Hero.HasBuff("Recall"))
+                return false;
 
-		    return true;
-	    }
+            return true;
+        }
 
         static void PlayEmote()
         {
             //Packet.C2S.Emote.Encoded(new Packet.C2S.Emote.Struct((byte)Packet.Emotes.Laugh, main.Hero.NetworkId)).Send();
 
             // temp solution until the related packet implemented by Joduskame
-	        String emoteCmd = Config.GetRandomEmoteCommand();
-	        if (emoteCmd != String.Empty)
-		        Game.Say(emoteCmd);
+            String emoteCmd = Config.GetRandomEmoteCommand();
+            if (emoteCmd != String.Empty)
+                Game.Say(emoteCmd);
         }
 
         internal static void Game_OnGameSendPacket(GamePacketEventArgs args)

@@ -8,11 +8,11 @@ namespace EmoteBlocker.Source
 {
     class Config
     {
-		public enum Emote { Taunt, Joke, Laugh, Dance }
+        public enum Emote { Taunt, Joke, Laugh, Dance }
 
-	    internal static Dictionary<string, MenuWrapper.SubMenu> Menus = new Dictionary<string, MenuWrapper.SubMenu>();
+        internal static Dictionary<string, MenuWrapper.SubMenu> Menus = new Dictionary<string, MenuWrapper.SubMenu>();
         internal static Dictionary<string, MenuWrapper.BoolLink> BoolLinks = new Dictionary<string, MenuWrapper.BoolLink>();
-		internal static Dictionary<string, MenuWrapper.SliderLink> SliderLinks = new Dictionary<string, MenuWrapper.SliderLink>();
+        internal static Dictionary<string, MenuWrapper.SliderLink> SliderLinks = new Dictionary<string, MenuWrapper.SliderLink>();
 
         internal static void CreateMenu()
         {
@@ -27,7 +27,7 @@ namespace EmoteBlocker.Source
             BoolLinks.Add("spamJoke", spammerMenu.AddLinkedBool("Spam Joke"));
             BoolLinks.Add("spamLaugh", spammerMenu.AddLinkedBool("Spam Laugh"));
             BoolLinks.Add("spamDance", spammerMenu.AddLinkedBool("Spam Dance", false));
-			SliderLinks.Add("spamInterval", spammerMenu.AddLinkedSlider("Interval (seconds)", 2, 1, 5));
+            SliderLinks.Add("spamInterval", spammerMenu.AddLinkedSlider("Interval (seconds)", 2, 1, 5));
 
             // there are any ally champions?
             IEnumerable<Obj_AI_Hero> allies = ObjectManager.Get<Obj_AI_Hero>().Where(hero => (hero.IsAlly && !hero.IsMe)).ToList();
@@ -70,47 +70,47 @@ namespace EmoteBlocker.Source
             get { return BoolLinks["spamEnabled"].Value; }
         }
 
-	    internal static int SpamInterval
-	    {
-			get { return SliderLinks["spamInterval"].Value.Value; }
-	    }
+        internal static int SpamInterval
+        {
+            get { return SliderLinks["spamInterval"].Value.Value; }
+        }
 
-	    internal static String GetRandomEmoteCommand()
-	    {
-		    List<Emote> emotes = new List<Emote>();
+        internal static String GetRandomEmoteCommand()
+        {
+            List<Emote> emotes = new List<Emote>();
 
-		    if (BoolLinks["spamTaunt"].Value)
-			    emotes.Add(Emote.Dance);
+            if (BoolLinks["spamTaunt"].Value)
+                emotes.Add(Emote.Dance);
 
-		    if (BoolLinks["spamJoke"].Value)
-			    emotes.Add(Emote.Joke);
+            if (BoolLinks["spamJoke"].Value)
+                emotes.Add(Emote.Joke);
 
-		    if (BoolLinks["spamLaugh"].Value)
-			    emotes.Add(Emote.Laugh);
+            if (BoolLinks["spamLaugh"].Value)
+                emotes.Add(Emote.Laugh);
 
-		    if (BoolLinks["spamDance"].Value)
-			    emotes.Add(Emote.Dance);
+            if (BoolLinks["spamDance"].Value)
+                emotes.Add(Emote.Dance);
 
-		    if (!emotes.Any())
-			    return String.Empty;
+            if (!emotes.Any())
+                return String.Empty;
 
-		    switch (emotes[new Random().Next(emotes.Count)])
-		    {
-			    case Emote.Taunt:
-				    return "/taunt";
+            switch (emotes[new Random().Next(emotes.Count)])
+            {
+                case Emote.Taunt:
+                    return "/taunt";
 
-				case Emote.Joke:
-				    return "/joke";
+                case Emote.Joke:
+                    return "/joke";
 
-				case Emote.Laugh:
-				    return "/laugh";
+                case Emote.Laugh:
+                    return "/laugh";
 
-				case Emote.Dance:
-				    return "/dance";
-		    }
+                case Emote.Dance:
+                    return "/dance";
+            }
 
-		    return String.Empty;
-	    }
+            return String.Empty;
+        }
 
         internal static HashSet<long> GetBlockedNetworkIDs()
         {
