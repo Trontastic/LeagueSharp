@@ -6,7 +6,7 @@ namespace EmoteBlocker
     {
         static void Main(string[] args)
         {
-	        Core.Init();
+            Core.Init();
         }
     }
 }

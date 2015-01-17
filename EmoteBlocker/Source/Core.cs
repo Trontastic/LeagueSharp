@@ -5,7 +5,7 @@ namespace EmoteBlocker.Source
 {
     class Core
     {
-        internal static bool DebugMode = true;
+        internal static bool DebugMode = false;
 
         internal static Obj_AI_Hero Hero;
 
