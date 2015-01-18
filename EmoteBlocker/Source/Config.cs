@@ -27,7 +27,7 @@ namespace EmoteBlocker.Source
             BoolLinks.Add("spamJoke", spammerMenu.AddLinkedBool("Spam Joke"));
             BoolLinks.Add("spamLaugh", spammerMenu.AddLinkedBool("Spam Laugh"));
             BoolLinks.Add("spamDance", spammerMenu.AddLinkedBool("Spam Dance", false));
-            SliderLinks.Add("spamInterval", spammerMenu.AddLinkedSlider("Interval (seconds)", 3, 1, 5));
+            SliderLinks.Add("spamInterval", spammerMenu.AddLinkedSlider("Interval (seconds)", 3, 1, 15));
 
             // there are any ally champions?
             IEnumerable<Obj_AI_Hero> allies = ObjectManager.Get<Obj_AI_Hero>().Where(hero => (hero.IsAlly && !hero.IsMe)).ToList();
