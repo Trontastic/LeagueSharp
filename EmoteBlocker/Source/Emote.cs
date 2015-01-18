@@ -47,8 +47,8 @@ namespace EmoteBlocker.Source
         static Boolean CanPlayEmote()
         {
             // is there any condition where emote should not be used?
-            if (Core.Hero.IsDead || Core.Hero.IsChanneling || Core.Hero.IsCharging || Core.Hero.HasBuff("Recall")
-                || !Core.Hero.IsVisible || Core.Hero.IsWindingUp || Core.Hero.IsAutoAttacking)
+            if (Core.Hero.IsDead || Core.Hero.Spellbook.IsChanneling || Core.Hero.Spellbook.IsCharging || Core.Hero.HasBuff("Recall")
+                || !Core.Hero.IsVisible || Core.Hero.IsWindingUp || Core.Hero.Spellbook.IsAutoAttacking)
                 return false;
 
             Obj_AI_Hero nearestEnemy =
