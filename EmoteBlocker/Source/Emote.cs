@@ -59,8 +59,9 @@ namespace EmoteBlocker.Source
             if (nearestEnemy == null || nearestEnemy.Distance(Core.Hero) > 1000)
                 return false;
 
-            // i'm dead, channeling, charging or recalling?
-            if (Core.Hero.IsDead || Core.Hero.IsChanneling || Core.Hero.IsCharging || Core.Hero.HasBuff("Recall"))
+            // is there any other condition where emote should not be used?
+            if (Core.Hero.IsDead || Core.Hero.IsChanneling || Core.Hero.IsCharging || Core.Hero.HasBuff("Recall")
+                || !Core.Hero.IsVisible || Core.Hero.IsWindingUp || Core.Hero.IsAutoAttacking)
                 return false;
 
             return true;
