@@ -19,7 +19,7 @@ namespace EmoteBlocker.Source
 
         internal static void Game_OnGameProcessPacket(GamePacketEventArgs args)
         {
-            if(args.PacketData[0] == Packet.S2C.PlayEmote.Header)
+            if(args.PacketData[0] == 36)
             {
                 Packet.S2C.PlayEmote.Struct packet = Packet.S2C.PlayEmote.Decoded(args.PacketData);
 
@@ -28,7 +28,11 @@ namespace EmoteBlocker.Source
 
                 // blocked?
                 if (Config.GetBlockedNetworkIDs().Contains(packet.NetworkId))
+                {
                     args.Process = false;
+                    if(Core.DebugMode)
+                        Game.PrintChat("Blocked emote");
+                }
             }
         }
 
@@ -39,16 +43,13 @@ namespace EmoteBlocker.Source
 
             PlayEmote();
             _nextEmoteSpam = (int)Game.Time + Config.SpamInterval;
-
-            if (Core.DebugMode)
-                Game.PrintChat("Spam");
         }
 
         static Boolean CanPlayEmote()
         {
             // is there any condition where emote should not be used?
             if (Core.Hero.IsDead || Core.Hero.Spellbook.IsChanneling || Core.Hero.Spellbook.IsCharging || Core.Hero.HasBuff("Recall")
-                || !Core.Hero.IsVisible || Core.Hero.IsWindingUp || Core.Hero.Spellbook.IsAutoAttacking)
+                || !Core.Hero.IsVisible || Core.Hero.IsWindingUp || Core.Hero.Spellbook.IsAutoAttacking || Core.Hero.IsMoving)
                 return false;
 
             Obj_AI_Hero nearestEnemy =
@@ -72,13 +73,11 @@ namespace EmoteBlocker.Source
             // temp solution until the related packet implemented by Joduskame
             String emoteCmd = Config.GetRandomEmoteCommand();
             if (emoteCmd != String.Empty)
+            {
                 Game.Say(emoteCmd);
-        }
-
-        internal static void Game_OnGameSendPacket(GamePacketEventArgs args)
-        {
-            if (Core.DebugMode)
-                Game.PrintChat("Header: {0}", args.PacketData[0]);
+                if (Core.DebugMode)
+                    Game.PrintChat("Spam: {0}", emoteCmd);
+            }
         }
     }
 }

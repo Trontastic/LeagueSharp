@@ -22,7 +22,7 @@ namespace EmoteBlocker.Source
             Hero = ObjectManager.Player;
 
             Game.OnGameProcessPacket += Emote.Game_OnGameProcessPacket;
-            Game.OnGameSendPacket += Emote.Game_OnGameSendPacket;
+            //Game.OnGameSendPacket += Emote.Game_OnGameSendPacket;
             Game.OnGameUpdate += Emote.Game_OnGameUpdate;
 
             Config.CreateMenu();

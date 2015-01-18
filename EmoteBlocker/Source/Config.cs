@@ -27,7 +27,7 @@ namespace EmoteBlocker.Source
             BoolLinks.Add("spamJoke", spammerMenu.AddLinkedBool("Spam Joke"));
             BoolLinks.Add("spamLaugh", spammerMenu.AddLinkedBool("Spam Laugh"));
             BoolLinks.Add("spamDance", spammerMenu.AddLinkedBool("Spam Dance", false));
-            SliderLinks.Add("spamInterval", spammerMenu.AddLinkedSlider("Interval (seconds)", 2, 1, 5));
+            SliderLinks.Add("spamInterval", spammerMenu.AddLinkedSlider("Interval (seconds)", 3, 1, 5));
 
             // there are any ally champions?
             IEnumerable<Obj_AI_Hero> allies = ObjectManager.Get<Obj_AI_Hero>().Where(hero => (hero.IsAlly && !hero.IsMe)).ToList();
@@ -80,7 +80,7 @@ namespace EmoteBlocker.Source
             List<Emote> emotes = new List<Emote>();
 
             if (BoolLinks["spamTaunt"].Value)
-                emotes.Add(Emote.Dance);
+                emotes.Add(Emote.Taunt);
 
             if (BoolLinks["spamJoke"].Value)
                 emotes.Add(Emote.Joke);
@@ -97,16 +97,16 @@ namespace EmoteBlocker.Source
             switch (emotes[new Random().Next(emotes.Count)])
             {
                 case Emote.Taunt:
-                    return "/taunt";
+                    return "/t";
 
                 case Emote.Joke:
-                    return "/joke";
+                    return "/j";
 
                 case Emote.Laugh:
-                    return "/laugh";
+                    return "/l";
 
                 case Emote.Dance:
-                    return "/dance";
+                    return "/d";
             }
 
             return String.Empty;
