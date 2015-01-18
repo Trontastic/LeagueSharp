@@ -34,10 +34,7 @@ namespace EmoteBlocker.Source
 
         internal static void Game_OnGameUpdate(EventArgs args)
         {
-            if (!Config.SpamEnabled || _nextEmoteSpam < (int) Game.Time)
-                return;
-
-            if (!CanPlayEmote())
+            if (!Config.SpamEnabled || _nextEmoteSpam > (int) Game.Time || !CanPlayEmote())
                 return;
 
             PlayEmote();
@@ -49,6 +46,11 @@ namespace EmoteBlocker.Source
 
         static Boolean CanPlayEmote()
         {
+            // is there any condition where emote should not be used?
+            if (Core.Hero.IsDead || Core.Hero.IsChanneling || Core.Hero.IsCharging || Core.Hero.HasBuff("Recall")
+                || !Core.Hero.IsVisible || Core.Hero.IsWindingUp || Core.Hero.IsAutoAttacking)
+                return false;
+
             Obj_AI_Hero nearestEnemy =
                 ObjectManager.Get<Obj_AI_Hero>()
                     .Where(h => (!h.IsDead && h.IsEnemy))
@@ -59,11 +61,7 @@ namespace EmoteBlocker.Source
             if (nearestEnemy == null || nearestEnemy.Distance(Core.Hero) > 1000)
                 return false;
 
-            // is there any other condition where emote should not be used?
-            if (Core.Hero.IsDead || Core.Hero.IsChanneling || Core.Hero.IsCharging || Core.Hero.HasBuff("Recall")
-                || !Core.Hero.IsVisible || Core.Hero.IsWindingUp || Core.Hero.IsAutoAttacking)
-                return false;
-
+            // otherwise
             return true;
         }
 
