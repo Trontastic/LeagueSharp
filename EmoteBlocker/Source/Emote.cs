@@ -1,7 +1,9 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using LeagueSharp;
 using LeagueSharp.Common;
+using SharpDX;
 
 namespace EmoteBlocker.Source
 {
@@ -49,7 +51,7 @@ namespace EmoteBlocker.Source
         {
             // is there any condition where emote should not be used?
             if (Core.Hero.IsDead || Core.Hero.Spellbook.IsChanneling || Core.Hero.Spellbook.IsCharging || Core.Hero.HasBuff("Recall")
-                || !Core.Hero.IsVisible || Core.Hero.IsWindingUp || Core.Hero.Spellbook.IsAutoAttacking || Core.Hero.IsMoving)
+                || !Core.Hero.IsVisible || Core.Hero.IsWindingUp || Core.Hero.Spellbook.IsAutoAttacking)
                 return false;
 
             Obj_AI_Hero nearestEnemy =
@@ -72,12 +74,26 @@ namespace EmoteBlocker.Source
 
             // temp solution until the related packet implemented by Joduskame
             String emoteCmd = Config.GetRandomEmoteCommand();
-            if (emoteCmd != String.Empty)
+            if (emoteCmd == String.Empty)
+                return;
+            
+            // is moving? if yes, store it
+            Vector2? finish = null;
+            if (Core.Hero.IsMoving)
             {
-                Game.Say(emoteCmd);
-                if (Core.DebugMode)
-                    Game.PrintChat("Spam: {0}", emoteCmd);
+                List<Vector2> waypoints = Core.Hero.GetWaypoints();
+                if (waypoints.Count() > 1)
+                    finish = waypoints.Last();
             }
+
+            // send emote command
+            Game.Say(emoteCmd);
+            if (Core.DebugMode)
+                Game.PrintChat("Spam: {0}", emoteCmd);
+
+            // is moving? then continue
+            if (finish != null && Core.Hero.Distance(finish.Value.To3D()) > 1)
+                Core.Hero.IssueOrder(GameObjectOrder.MoveTo, finish.Value.To3D());
         }
     }
 }
